@@ -1,10 +1,5 @@
 from pathlib import Path
 from decouple import config
-from django.conf import settings
-from django.conf.urls.static import static
-from django.http import JsonResponse
-from django.urls import path
-from django.contrib import admin
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -123,12 +118,3 @@ STATIC_ROOT = BASE_DIR / "static"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-urlpatterns = [
-    path("admin/", admin.site.urls),
-    path('health/', lambda _: JsonResponse({'detail': 'Healthy'}), name='health'),
-]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
