@@ -1,5 +1,10 @@
 from pathlib import Path
 from decouple import config
+from django.conf import settings
+from django.conf.urls.static import static
+from django.http import JsonResponse
+from django.urls import path
+from django.contrib import admin
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -69,14 +74,13 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': config('DB_ENGINE', default = 'django.db.backend.sqlite3'),
-        'NAME': config('DB_NAME', default = 'db.sqlite3'),
-        'USER': config('DB_USER', default = ''),
-        'PASSWORD': config('DB_PASSWORD', default = ''),
-        'HOST': config('DB_HOST', default = ''),
-        'PORT': config('DB_PORT', default = ''),
+        'ENGINE': config('DB_ENGINE', default='django.db.backends.sqlite3'),
+        'NAME': config('DB_NAME', default='db.sqlite3'),
+        'USER': config('DB_USER', default=''),
+        'PASSWORD': config('DB_PASSWORD', default=''),
+        'HOST': config('DB_HOST', default=''),
+        'PORT': config('DB_PORT', default=''),
     }
-
 }
 
 # Password validation
@@ -111,7 +115,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 
 STATIC_ROOT = BASE_DIR / "static"
 
@@ -119,3 +123,12 @@ STATIC_ROOT = BASE_DIR / "static"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path('health/', lambda _: JsonResponse({'detail': 'Healthy'}), name='health'),
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
