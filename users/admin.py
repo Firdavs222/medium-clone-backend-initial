@@ -6,8 +6,13 @@ from .models import CustomUser
 @admin.register(CustomUser)
 
 class CustomUserAdmin(UserAdmin):  
-    fieldsets = UserAdmin.fieldsets + (
+    """fieldsets = UserAdmin.fieldsets + (
         (None, {'fields': ('middle_name',)}),
+    )"""
+    fieldsets = UserAdmin.fieldsets + (
+        ('Additional info', {
+            'fields': ('middle_name', 'avatar',)
+        }),
     )
     list_display = ('id', 'username', 'email', 'first_name', 'last_name', 'middle_name')
     list_display_links = ('id', 'username', 'email')

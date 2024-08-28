@@ -1,9 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+import os
+import uuid
 # Create your models here.
+
+def file_upload(instance, filename):
+    """ This function is used to upload the user's avatar. """
+    ext = filename.split('.')[-1]
+    filename = f'{instance.username}.{ext}'
+    return os.path.join('users/avatars/', filename)
 
 class CustomUser(AbstractUser):
     middle_name = models.CharField(max_length=30, blank=True, null=True)
+    avatar = models.ImageField(upload_to=file_upload, blank=True)
     
     class Meta:
         db_table = "user"
@@ -20,3 +29,4 @@ class CustomUser(AbstractUser):
     def full_name(self):
         """ Returns the user's full name. """
         return f"{self.last_name} {self.first_name} {self.middle_name}"
+
