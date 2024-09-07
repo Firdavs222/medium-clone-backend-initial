@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
-from .serializers import UserSerializer, LoginSerializer, ValidationErrorSerializer, TokenResponseSerializer, UserUpdateSerializer
+from .serializers import (UserSerializer, LoginSerializer, ValidationErrorSerializer, TokenResponseSerializer, UserUpdateSerializer)
 from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema, extend_schema_view
 
@@ -108,4 +108,9 @@ class UsersMe(generics.RetrieveAPIView, generics.UpdateAPIView):
         return self.request.user
 
     def get_serializer_class(self):
+        if self.request.method == 'PATCH':
+            return UserUpdateSerializer
         return UserSerializer
+    
+    def patch(self, request, *args, **kwargs):
+        return super().partial_update(request, *args, **kwargs)
