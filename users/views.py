@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from rest_framework import status, permissions, generics
+from rest_framework import status, permissions, generics, parsers
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
-from .serializers import UserSerializer, LoginSerializer, ValidationErrorSerializer, TokenResponseSerializer
+from .serializers import UserSerializer, LoginSerializer, ValidationErrorSerializer, TokenResponseSerializer, UserUpdateSerializer
 from django.contrib.auth import get_user_model
 from drf_spectacular.utils import extend_schema, extend_schema_view
 
@@ -85,14 +85,23 @@ class LoginView(APIView):
             200: UserSerializer,
             400: ValidationErrorSerializer
         }
+    ),
+    patch=extend_schema(
+        summary="Update user information",
+        request=UserUpdateSerializer,
+        responses={
+            200: UserUpdateSerializer,
+            400: ValidationErrorSerializer
+        }
     )
 )
 
 
 # User malumotlarni olish uchum class
 class UsersMe(generics.RetrieveAPIView, generics.UpdateAPIView):
-    http_method_names = ['get',]
+    http_method_names = ['get','patch']
     queryset = User.objects.filter(is_active=True)
+    parser_classes = [parsers.MultiPartParser]
     permission_classes = (IsAuthenticated,)
 
     def get_object(self):

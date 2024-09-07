@@ -26,6 +26,10 @@ class UserSerializer(serializers.ModelSerializer):   # user uchun [serializer](<
         user.save()
         return user
 
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'middle_name', 'email', 'avatar']
 
 
 class LoginSerializer(serializers.Serializer):         # user login uchun [serializer](<http://serializers.py>) klasi
